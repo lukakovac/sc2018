@@ -85,6 +85,8 @@ def processVideo():
     while ret:
         if not ret:
             break
+        lowerBoundry = np.array([160, 160, 160], dtype="uint8")
+        upperBoundry = np.array([255, 255, 255], dtype="uint8")
         mask_extracted_digits = cv2.inRange(frame, lowerBoundry, upperBoundry)
         mask_extracted_digits = cv2.dilate(mask_extracted_digits, kernel)
         img_lbl, number_of_objects = ndimage.label(mask_extracted_digits)
@@ -142,8 +144,6 @@ for i in range(10):
         lineEdges = [(x1, y1), (x2, y2)]
         id = -1
         processed_digits = []
-        lowerBoundry = np.array([160, 160, 160], dtype="uint8")
-        upperBoundry = np.array([255, 255, 255], dtype="uint8")
         kernel = np.ones((2, 2), np.uint8)
         processVideo()
         print("totalCount: " + format(int(totalCount)))
