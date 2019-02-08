@@ -20,6 +20,12 @@ def getDigitCoordinates(blob_position):
     y22 = blob_position[1] + digit_img_size / 2
     return (x11, y11, x22, y22)
 
+def InitNewDigit(id, current_digit,x11, y11, x22, y22, mask_extracted_digits):
+        current_digit['id'] = id
+        current_digit['hasPassed'] = False
+        current_digit['value'] = findNumber(mask_extracted_digits[int(y11):int(y22), int(x11):int(x22)])
+        current_digit['img'] = mask_extracted_digits[int(y11):int(y22), int(x11):int(x22)]
+        return  current_digit
 def filterDigitsOnFrame(seq, value):
     for el in seq:
         if value - el['frame_indx'] < 5 and el['hasPassed'] is False: yield el
@@ -106,11 +112,8 @@ def processVideo():
                     (x11, y11, x22, y22) = getDigitCoordinates(blob_position)
                     global id
                     id += 1
-                    current_digit['id'] = id
-                    current_digit['hasPassed'] = False
-                    current_digit['value'] = findNumber(mask_extracted_digits[int(y11):int(y22), int(x11):int(x22)])
-                    current_digit['img'] = mask_extracted_digits[int(y11):int(y22), int(x11):int(x22)]
-                    processed_digits.append(current_digit)
+
+                    processed_digits.append(InitNewDigit(id,current_digit, x11, y11, x22, y22, mask_extracted_digits))
                 else:
                     processed_digit = min(close_digit_hints, key=lambda x: mathHelper.vectorMagnitude(mathHelper.getVector(x['center'], current_digit['center'])))
                     processed_digit['center'] = current_digit['center']
